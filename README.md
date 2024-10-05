@@ -1,8 +1,7 @@
 # CaféConnect
 CaféConnect is a fully-featured social media web application, built with the MERN stack.  
 
-Deployed at: https://post-it-heroku.herokuapp.com/  
-![GIF of CaféConnect walkthrough](https://drive.google.com/file/d/1Zl0RZOR-ACBE63BIoDkyhT1rsT6olKj_/view?usp=sharing)
+Check out the walkthrough video of CaféConnect: [Watch the Video](https://drive.google.com/file/d/1Zl0RZOR-ACBE63BIoDkyhT1rsT6olKj_/view?usp=sharing)
 
 ## Features
 - Create, read, update and delete posts
