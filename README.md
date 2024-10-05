@@ -1,6 +1,9 @@
 # CaféConnect
 CaféConnect is a fully-featured social media web application, built with the MERN stack.  
 
+## Live Demo
+Check out the live application at: [CaféConnect Live](https://cafe-connect-ahmedessamyounsa.web.app/)
+
 Check out the walkthrough video of CaféConnect: [Watch the Video](https://drive.google.com/file/d/1Zl0RZOR-ACBE63BIoDkyhT1rsT6olKj_/view?usp=sharing)
 
 ## Features
