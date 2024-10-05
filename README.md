@@ -2,7 +2,7 @@
 CaféConnect is a fully-featured social media web application, built with the MERN stack.  
 
 Deployed at: https://post-it-heroku.herokuapp.com/  
-![GIF of CaféConnect walkthrough](https://media.giphy.com/media/9tnaXy42T4NzSJdHhP/giphy.gif)
+![GIF of CaféConnect walkthrough](https://drive.google.com/file/d/1Zl0RZOR-ACBE63BIoDkyhT1rsT6olKj_/view?usp=sharing)
 
 ## Features
 - Create, read, update and delete posts
@@ -19,11 +19,12 @@ Deployed at: https://post-it-heroku.herokuapp.com/
 - Search for posts by their title
 - View the users who liked a particular post
 - Fully responsive layout
+- dark mode and light mode
 
 ## Installation and usage
 1) Clone this repository  
 ```
-git clone https://github.com/ihtasham42/social-media-app.git
+git clone https://github.com/AhmedEssamYouns/cafe-connect.git
 ```
 2) Install dependencies  
 ```
