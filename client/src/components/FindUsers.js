@@ -63,16 +63,6 @@ const FindUsers = () => {
 
         <Divider />
 
-        {/* Search input for filtering users */}
-        <TextField
-          placeholder="Search users..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          variant="outlined"
-          size="small"
-          sx={{ width: "100%" }}
-        />
-
         {loading ? (
           <Loading />
         ) : (

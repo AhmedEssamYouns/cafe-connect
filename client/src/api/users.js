@@ -77,7 +77,7 @@ const updateUser = async (user, data) => {
     console.log(err);
   }
 };
-// New function to get all users
+
 const getAllUsers = async () => {
   try {
     const res = await fetch(BASE_URL + "api/users");

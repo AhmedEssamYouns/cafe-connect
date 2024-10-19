@@ -16,7 +16,7 @@ const CreatePost = () => {
       }}
     >
       <AiOutlinePlus style={{ flexShrink: 0 }} />
-      <span>New Post</span>
+      <span>post</span>
     </Button>
   );
 };

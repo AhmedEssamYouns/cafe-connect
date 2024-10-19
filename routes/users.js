@@ -10,6 +10,7 @@ router.get("/random", userControllers.getRandomUsers);
 
 router.get("/:username", userControllers.getUser);
 router.patch("/:id", verifyToken, userControllers.updateUser);
+router.get("/", userControllers.getAllUsers);
 
 router.post("/follow/:id", verifyToken, userControllers.follow);
 router.delete("/unfollow/:id", verifyToken, userControllers.unfollow);

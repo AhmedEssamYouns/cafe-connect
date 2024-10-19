@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CssBaseline, ThemeProvider, Box } from "@mui/material"; 
+import { CssBaseline, ThemeProvider, Box, useMediaQuery } from "@mui/material"; 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { lightTheme, darkTheme } from "./theme"; 
 import PostView from "./components/views/PostView";
@@ -13,8 +13,10 @@ import SearchView from "./components/views/SearchView";
 import MessengerView from "./components/views/MessengerView";
 import Navbar from "./components/Navbar"; 
 import { initiateSocketConnection } from "./helpers/socketHelper";
+
 function App() {
   const [darkMode, setDarkMode] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 634px)"); // Check if the screen width is 634 or less
 
   useEffect(() => {
     const savedMode = localStorage.getItem("darkMode") === "true";
@@ -34,13 +36,12 @@ function App() {
     initiateSocketConnection();
   }, []);
 
-
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <BrowserRouter>
         <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        <Box sx={{ pt: 10 }}>
+        <Box sx={{ pt: isMobile ? 15 : 10 }}> {/* Adjust padding based on screen width */}
           <Routes>
             <Route path="/" element={<ExploreView />} />
             <Route path="/posts/:id" element={<PostView />} />
