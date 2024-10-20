@@ -24,11 +24,20 @@ const io = require("socket.io")(httpServer, {
 io.use(authSocket);
 io.on("connection", (socket) => socketServer(socket));
 
+mongoose.set('strictQuery', false); 
 mongoose.connect(
   process.env.MONGO_URI,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  () => {
-    console.log("MongoDB connected");
+  { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 15000, 
+  },
+  (err) => {
+    if (err) {
+      console.error("MongoDB connection error:", err);
+    } else {
+      console.log("MongoDB connected");
+    }
   }
 );
 
