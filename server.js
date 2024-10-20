@@ -21,6 +21,8 @@ const io = require("socket.io")(httpServer, {
   },
 });
 
+
+
 io.use(authSocket);
 io.on("connection", (socket) => socketServer(socket));
 
@@ -52,6 +54,10 @@ app.use("/api/users", users);
 app.use("/api/comments", comments);
 app.use("/api/messages", messages);
 
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to the Cafe Connect API! Use the following endpoints: /api/posts, /api/users, /api/comments, /api/messages" });
+});
+
 if (process.env.NODE_ENV == "production") {
   app.use(express.static(path.join(__dirname, "/client/build")));
 
@@ -59,3 +65,4 @@ if (process.env.NODE_ENV == "production") {
     res.sendFile(path.join(__dirname, "client/build", "index.html"));
   });
 }
+
