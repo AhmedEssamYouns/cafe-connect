@@ -11,9 +11,11 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  useMediaQuery,
+  Popover,
 } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { AiFillHome, AiOutlineCoffee, AiFillMessage, AiOutlineSearch } from "react-icons/ai";
+import { AiFillHome, AiOutlineCoffee, AiFillMessage, AiOutlineSearch, AiOutlineLogout, AiOutlineMenu } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { isLoggedIn, logoutUser } from "../helpers/authHelper";
 import UserAvatar from "./UserAvatar";
@@ -91,6 +93,8 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSearch("");
+    setFilteredUsers([]);
     navigate("/search?" + new URLSearchParams({ search }));
   };
 
@@ -105,6 +109,17 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   };
 
   const mobile = width < 635;
+  const isMobile = useMediaQuery("(max-width: 634px)");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openPopover = Boolean(anchorEl);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Stack
@@ -198,15 +213,49 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
           <IconButton component={Link} to={"/"}>
             <AiFillHome />
           </IconButton>
+
           {user ? (
             <>
               <IconButton component={Link} to={"/messenger"}>
                 <AiFillMessage />
               </IconButton>
+
               <IconButton component={Link} to={"/users/" + username}>
                 <UserAvatar width={28} height={28} username={user.username} />
               </IconButton>
-              <Button size="small" onClick={handleLogout}>Logout</Button>
+              {isMobile ? (
+                <>
+                  <IconButton onClick={handleMenuOpen}>
+                    <AiOutlineMenu size={24} />
+                  </IconButton>
+                  <Popover
+                    open={openPopover}
+                    anchorEl={anchorEl}
+                    onClose={handleMenuClose}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                  >
+                    <List>
+                      <ListItem button onClick={toggleDarkMode}>
+                        {darkMode ?
+                          <RiSunFill style={{ marginRight: 8 }} /> :
+                          <RiContrast2Line style={{ marginRight: 8 }} />}
+                        <ListItemText primary={darkMode ? 'Light Mode' : 'Dark Mode'} />
+                      </ListItem>
+                      <ListItem button onClick={handleLogout}>
+                        <AiOutlineLogout style={{ marginRight: 8 }} />
+                        <ListItemText primary="Logout" />
+                      </ListItem>
+                    </List>
+                  </Popover>
+                </>
+              ) : (
+                <>
+                  <Button size="small" onClick={handleLogout}>Logout</Button>
+                  <IconButton size="small">
+                    {darkMode ? <RiSunFill onClick={toggleDarkMode} /> : <RiContrast2Line onClick={toggleDarkMode} />}
+                  </IconButton>
+                </>
+              )}
             </>
           ) : (
             <>
@@ -216,13 +265,17 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               <Button variant="text" size="small" href="/login">
                 Login
               </Button>
+              {isMobile &&
+                <IconButton size="small">
+                  {darkMode ?
+                    <RiSunFill onClick={toggleDarkMode} /> :
+                    <RiContrast2Line onClick={toggleDarkMode} />}
+                </IconButton>
+              }
             </>
           )}
-          <IconButton size="small">
-            {darkMode ?
-              <RiSunFill onClick={toggleDarkMode} /> :
-              <RiContrast2Line onClick={toggleDarkMode} />}
-          </IconButton>
+    
+
         </HorizontalStack>
       </Stack>
 
@@ -232,6 +285,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             size="small"
             label="Search..."
             fullWidth
+            style={{ display: !searchIcon ? "none" : 'flex' }}
             inputRef={searchInputRef}
             onChange={handleChange}
             value={search}

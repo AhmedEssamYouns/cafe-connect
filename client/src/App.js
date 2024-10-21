@@ -16,7 +16,7 @@ import { initiateSocketConnection } from "./helpers/socketHelper";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 634px)"); // Check if the screen width is 634 or less
+  const isMobile = useMediaQuery("(max-width: 634px)"); 
 
   useEffect(() => {
     const savedMode = localStorage.getItem("darkMode") === "true";

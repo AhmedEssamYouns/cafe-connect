@@ -5,10 +5,10 @@ import Moment from "react-moment";
 import UserAvatar from "./UserAvatar";
 import { Link } from "react-router-dom";
 
-const ContentDetails = ({ username, createdAt, edited, preview }) => {
+const ContentDetails = ({ username, createdAt, edited, preview,avatar }) => {
   return (
     <HorizontalStack sx={{}}>
-      <UserAvatar width={30} height={30} username={username} />
+      <UserAvatar width={30} height={30} avatarId={avatar} username={username} />
       <Typography variant="subtitle2" color="text.secondary" gutterBottom>
         <Typography
           component={Link} // Use Typography as a link

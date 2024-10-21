@@ -17,8 +17,11 @@
     "dotenv": "^16.0.0",
     "express": "^4.18.1",
     "express-validator": "^6.14.0",
+    "gridfs-stream": "^1.1.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.3.2",
+    "mongoose": "^6.13.3",
+    "multer": "^1.4.4",
+    "multer-gridfs-storage": "^5.0.2",
     "nodemon": "^2.0.16",
     "socket.io": "^4.5.1",
     "validator": "^13.7.0"

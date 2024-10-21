@@ -16,6 +16,7 @@ import { isLoggedIn } from "../helpers/authHelper";
 import ContentUpdateEditor from "./ContentUpdateEditor";
 import UserAvatar from "./UserAvatar";
 import HorizontalStack from "./util/HorizontalStack";
+import UpdateAvatar from "./updateAvatar";
 
 const MobileProfile = (props) => {
   const [user, setUser] = useState(null);
@@ -36,6 +37,8 @@ const MobileProfile = (props) => {
           <HorizontalStack spacing={2} justifyContent="space-between">
             <HorizontalStack>
               <UserAvatar width={50} height={50} username={user.username} />
+              <UpdateAvatar profile={props.profile} user={user} />
+
               <Typography variant="h6" textOverflow="ellipses">
                 {user.username}
               </Typography>
@@ -59,7 +62,7 @@ const MobileProfile = (props) => {
             </Box>
           </HorizontalStack>
           <Divider />
-          <Box>
+          <HorizontalStack>
             {currentUser && user._id === currentUser.userId && (
               <IconButton onClick={props.handleEditing} sx={{ mr: 1 }}>
                 {props.editing ? (
@@ -69,6 +72,7 @@ const MobileProfile = (props) => {
                 )}
               </IconButton>
             )}
+
             {user.biography ? (
               <>
                 <Typography textAlign="center" variant="p">
@@ -86,6 +90,7 @@ const MobileProfile = (props) => {
                 </i>
               </Typography>
             )}
+
             {currentUser && user._id !== currentUser.userId && (
               <Box sx={{ mt: 2 }}>
                 <Button variant="outlined" onClick={props.handleMessage}>
@@ -102,7 +107,7 @@ const MobileProfile = (props) => {
                 />
               </Box>
             )}
-          </Box>
+          </HorizontalStack>
         </Stack>
       ) : (
         <>Loading...</>

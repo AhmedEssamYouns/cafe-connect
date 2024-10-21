@@ -16,6 +16,8 @@ import Footer from "./Footer";
 import Loading from "./Loading";
 import UserAvatar from "./UserAvatar";
 import HorizontalStack from "./util/HorizontalStack";
+import AvatarUpdateEditor from "./updateAvatar";
+import UpdateAvatar from "./updateAvatar";
 
 const Profile = (props) => {
   const [user, setUser] = useState(null);
@@ -34,7 +36,8 @@ const Profile = (props) => {
       {user ? (
         <Stack alignItems="center" spacing={2}>
           <Box my={1}>
-            <UserAvatar width={150} height={150} username={user.username} />
+            <UserAvatar width={150} height={150} username={user.username} avatarId={user.avatar} />
+            <UpdateAvatar user={user} />
           </Box>
 
           <Typography variant="h5">{user.username}</Typography>

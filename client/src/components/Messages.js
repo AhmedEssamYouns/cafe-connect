@@ -25,16 +25,17 @@ import HorizontalStack from "./util/HorizontalStack";
 const Messages = (props) => {
   const messagesEndRef = useRef(null);
   const user = isLoggedIn();
-  const [messages, setMessages] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const conversationsRef = useRef(props.conversations);
   const conservantRef = useRef(props.conservant);
-  const messagesRef = useRef(messages);
+
+  // Use a ref to keep track of previous messages
+  const previousMessagesRef = useRef([]);
+
   useEffect(() => {
     conversationsRef.current = props.conversations;
     conservantRef.current = props.conservant;
-    messagesRef.current = messages;
   });
 
   const conversation =
@@ -55,22 +56,22 @@ const Messages = (props) => {
   const fetchMessages = async () => {
     if (conversation) {
       if (conversation.new) {
-        setLoading(false);
+        setLoading(true); 
         setMessages(conversation.messages);
         return;
       }
-
-      setLoading(true);
-
-      const data = await getMessages(user, conversation._id);
-
-      setDirection(data);
-
-      if (data && !data.error) {
-        setMessages(data);
+  
+      if (JSON.stringify(messages) !== JSON.stringify(conversation.messages)) {
+        setLoading(false); 
+        const data = await getMessages(user, conversation._id);
+        setDirection(data);
+  
+        if (data && !data.error) {
+          setMessages(data);
+        }
+  
+        setLoading(false); 
       }
-
-      setLoading(false);
     }
   };
 
@@ -80,7 +81,7 @@ const Messages = (props) => {
 
   useEffect(() => {
     if (messages) {
-      scrollToBottom();
+      // scrollToBottom();
     }
   }, [messages]);
 
@@ -101,9 +102,7 @@ const Messages = (props) => {
     );
 
     newConversations.unshift(conversation);
-
     props.setConversations(newConversations);
-
     setMessages(newMessages);
 
     await sendMessage(user, newMessage, conversation.recipient._id);
@@ -118,18 +117,15 @@ const Messages = (props) => {
 
   const handleReceiveMessage = (senderId, username, content) => {
     const newMessage = { direction: "to", content };
-
     const conversation = props.getConversation(
       conversationsRef.current,
       senderId
     );
 
-    console.log(username + " " + content);
-
     if (conversation) {
       let newMessages = [newMessage];
-      if (messagesRef.current) {
-        newMessages = [...newMessages, ...messagesRef.current];
+      if (messages) {
+        newMessages = [...newMessages, ...messages];
       }
 
       setMessages(newMessages);
@@ -144,7 +140,6 @@ const Messages = (props) => {
       );
 
       newConversations.unshift(conversation);
-
       props.setConversations(newConversations);
     } else {
       const newConversation = {
@@ -160,9 +155,25 @@ const Messages = (props) => {
     scrollToBottom();
   };
 
+  // Socket listener for incoming messages
   useEffect(() => {
     socket.on("receive-message", handleReceiveMessage);
+    return () => {
+      socket.off("receive-message", handleReceiveMessage);
+    };
   }, []);
+
+  // Check for new messages every second
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      await fetchMessages();
+      if (JSON.stringify(messages) !== JSON.stringify(previousMessagesRef.current)) {
+        previousMessagesRef.current = messages;
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [messages]); // Ensure messages ref is updated
 
   return props.conservant ? (
     <>
@@ -211,7 +222,6 @@ const Messages = (props) => {
             </Box>
           </Box>
           <SendMessage onSendMessage={handleSendMessage} />
-          {scrollToBottom()}
         </>
       ) : (
         <Stack sx={{ height: "100%" }} justifyContent="center">

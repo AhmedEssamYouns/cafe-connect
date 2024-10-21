@@ -68,7 +68,7 @@ const FindUsers = () => {
         ) : (
           filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
-              <UserEntry username={user.username} key={user.username} />
+              <UserEntry username={user.username} avatar={user.avatar} key={user.username} />
             ))
           ) : (
             <Typography>No users found.</Typography>

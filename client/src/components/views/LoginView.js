@@ -45,13 +45,15 @@ const LoginView = () => {
   return (
     <Container maxWidth={"xs"} sx={{ mt: 6 }}>
       <Stack alignItems="center">
-        <Typography variant="h2" color="text.secondary" sx={{ mb: 6 }}>
-          <Link to="/" color="inherit" underline="none" style={{
-              fontFamily: 'Caveat, cursive',
-          }}>
-            CaféConnect
-          </Link>
+        <Typography
+          variant="h2"
+          color="text.secondary"
+          sx={{ mb: 6 }}
+          style={{ fontFamily: 'Caveat, cursive' }}
+        >
+          CaféConnect
         </Typography>
+
         <Typography variant="h5" gutterBottom>
           Login
         </Typography>

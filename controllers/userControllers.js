@@ -5,6 +5,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Follow = require("../models/Follow");
 const { default: mongoose } = require("mongoose");
+ 
+
+
 
 const getUserDict = (token, user) => {
   return {
@@ -105,6 +108,152 @@ const follow = async (req, res) => {
     return res.status(400).json({ error: err.message });
   }
 };
+const Grid = require("gridfs-stream");
+
+const getAllFiles = async (req, res) => {
+  try {
+    const conn = mongoose.connection;
+
+    if (!conn || conn.readyState !== 1) {
+      return res.status(500).json({ error: "Database connection not ready" });
+    }
+
+    const gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads'); // Specify custom bucket if files are under 'uploads'
+
+    console.log("Fetching files from GridFS...");
+
+    const files = await gfs.files.find().toArray();
+
+    if (!files || files.length === 0) {
+      return res.status(404).json({ message: "No files found" });
+    }
+
+    const fileData = files.map((file) => ({
+      id: file._id,
+      filename: file.filename,
+      contentType: file.contentType,
+      length: file.length,
+      uploadDate: file.uploadDate,
+    }));
+
+    return res.status(200).json({ files: fileData });
+  } catch (err) {
+    console.error("Error fetching files:", err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+const getFileById = async (req, res) => {
+  try {
+    const { id } = req.params; // Get file ID from URL params
+    const conn = mongoose.connection;
+
+    if (!conn || conn.readyState !== 1) {
+      return res.status(500).json({ error: "Database connection not ready" });
+    }
+
+    const gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads'); // Specify bucket name
+
+    console.log(`Fetching file with ID: ${id}`);
+
+    const file = await gfs.files.findOne({ _id: new mongoose.Types.ObjectId(id) });
+
+    if (!file) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    const fileData = {
+      id: file._id,
+      filename: file.filename,
+      contentType: file.contentType,
+      length: file.length,
+      uploadDate: file.uploadDate,
+    };
+
+    return res.status(200).json({ file: fileData });
+  } catch (err) {
+    console.error("Error fetching file by ID:", err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+
+const updateAvatar = async (req, res) => {
+  try {
+    const { userId } = req.body; // Get the user ID from the request body
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: `User with ID ${userId} not found` });
+    }
+
+    // If a file is uploaded, update the user's avatar
+    if (req.file) {
+      user.avatar = req.file.id; // Store the file ID from GridFS
+    }
+
+    // Save the updated user information
+    await user.save();
+
+    return res.status(200).json({ success: true, avatar: user.avatar });
+  } catch (err) {
+    console.error("Error updating avatar:", err); // Log the error for debugging
+    return res.status(500).json({ error: "Internal Server Error" }); // Return a generic error message for unexpected errors
+  }
+};
+
+
+const { GridFSBucket } = require('mongodb');
+
+const getAvatar = async (req, res) => {
+  try {
+    const { id } = req.params; // Get the avatar ID from URL parameters
+
+    const conn = mongoose.connection;
+
+    if (!conn || conn.readyState !== 1) {
+      return res.status(500).json({ error: "Database connection not ready" });
+    }
+
+    const bucket = new GridFSBucket(conn.db, { bucketName: 'uploads' });
+
+    const _id = new mongoose.Types.ObjectId(id);
+
+    // Check if the file exists
+    const files = await bucket.find({ _id }).toArray();
+
+    if (!files || files.length === 0) {
+      return res.status(404).json({ message: "Avatar not found" });
+    }
+
+    const file = files[0];
+
+    if (!file.contentType.startsWith('image/')) {
+      return res.status(400).json({ message: "File is not an image" });
+    }
+
+    // Set appropriate content type
+    res.setHeader('Content-Type', file.contentType);
+
+    // Stream the image to the response
+    const readstream = bucket.openDownloadStream(_id);
+
+    readstream.on('error', (err) => {
+      console.error('Error streaming file:', err);
+      res.status(500).json({ error: 'Error streaming file' });
+    });
+
+    readstream.pipe(res);
+  } catch (err) {
+    console.error('Error fetching avatar:', err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 
 const updateUser = async (req, res) => {
   try {
@@ -263,4 +412,8 @@ module.exports = {
   getAllUsers,
   getRandomUsers,
   updateUser,
+  updateAvatar,
+  getFileById,
+  getAllFiles,
+  getAvatar
 };

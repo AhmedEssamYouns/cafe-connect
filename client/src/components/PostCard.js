@@ -18,7 +18,7 @@ import LikeBox from "./LikeBox";
 import PostContentBox from "./PostContentBox";
 import HorizontalStack from "./util/HorizontalStack";
 
-import {} from "react-icons/ai";
+import { } from "react-icons/ai";
 import ContentUpdateEditor from "./ContentUpdateEditor";
 import Markdown from "./Markdown";
 
@@ -100,7 +100,7 @@ const PostCard = (props) => {
             alignItems="center"
             spacing={1}
             sx={{
-              backgroundColor: theme.palette.background.stack, 
+              backgroundColor: theme.palette.background.stack,
               width: "50px",
               padding: theme.spacing(1),
             }}
@@ -114,6 +114,7 @@ const PostCard = (props) => {
           <PostContentBox clickable={preview} post={post} editing={editing}>
             <HorizontalStack justifyContent="space-between">
               <ContentDetails
+                avatar={post.poster.avatar}
                 username={post.poster.username}
                 createdAt={post.createdAt}
                 edited={post.edited}
