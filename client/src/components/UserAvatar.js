@@ -1,7 +1,6 @@
 import { Avatar } from "@mui/material";
 import React from "react";
 import { BASE_URL } from "../config";
-import UpdateAvatar from "./updateAvatar";
 const UserAvatar = ({ avatarId, username, height, width }) => {
   const avatarUrl = avatarId
     ? `${BASE_URL}api/users/avatar/image/${avatarId}`

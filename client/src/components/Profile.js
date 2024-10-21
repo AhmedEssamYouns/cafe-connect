@@ -37,7 +37,7 @@ const Profile = (props) => {
         <Stack alignItems="center" spacing={2}>
           <Box my={1}>
             <UserAvatar width={150} height={150} username={user.username} avatarId={user.avatar} />
-            <UpdateAvatar user={user} />
+            {user == currentUser && <UpdateAvatar user={user} />}
           </Box>
 
           <Typography variant="h5">{user.username}</Typography>

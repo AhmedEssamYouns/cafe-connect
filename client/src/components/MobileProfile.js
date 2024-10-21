@@ -35,17 +35,15 @@ const MobileProfile = (props) => {
       {user ? (
         <Stack spacing={2}>
           <HorizontalStack spacing={2} justifyContent="space-between">
-            <HorizontalStack>
-              <UserAvatar width={50} height={50} username={user.username} />
-              <UpdateAvatar profile={props.profile} user={user} />
+            <UserAvatar width={45} height={50} avatarId={user.avatar} username={user.username} />
+            {user == currentUser && <UpdateAvatar profile={props.profile} user={user} />}
 
-              <Typography variant="h6" textOverflow="ellipses">
-                {user.username}
-              </Typography>
-            </HorizontalStack>
+            <Typography variant="h7" textOverflow="ellipses">
+              {user.username}
+            </Typography>
 
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              <HorizontalStack spacing={3}>
+              <HorizontalStack spacing={2}>
                 <Stack alignItems="center">
                   <Typography>Likes</Typography>
                   <Typography color="text.secondary">

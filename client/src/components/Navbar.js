@@ -15,13 +15,13 @@ import {
   Popover,
 } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { AiFillHome, AiOutlineCoffee, AiFillMessage, AiOutlineSearch, AiOutlineLogout, AiOutlineMenu } from "react-icons/ai";
+import { AiFillHome, AiOutlineCoffee, AiFillMessage, AiOutlineSearch, AiOutlineLogout, AiOutlineMenu,AiOutlineUser } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { isLoggedIn, logoutUser } from "../helpers/authHelper";
 import UserAvatar from "./UserAvatar";
 import HorizontalStack from "./util/HorizontalStack";
-import { RiContrast2Line, RiSunFill } from "react-icons/ri";
-import { getAllUsers } from '../api/users';
+import { RiContrast2Line, RiSunFill,RiUser2Fill, RiUser3Fill } from "react-icons/ri";
+import { getAllUsers, getUser } from '../api/users';
 
 const Navbar = ({ darkMode, toggleDarkMode }) => {
   const navigate = useNavigate();
@@ -35,6 +35,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchBoxWidth, setSearchBoxWidth] = useState(0);
 
+
   const searchInputRef = useRef(null); // Ref for the search input
 
   useEffect(() => {
@@ -47,11 +48,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   }, []);
 
   useEffect(() => {
+
     const fetchUsers = async () => {
       const data = await getAllUsers();
       setUsers(data);
     };
-
     fetchUsers();
   }, []);
 
@@ -221,7 +222,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               </IconButton>
 
               <IconButton component={Link} to={"/users/" + username}>
-                <UserAvatar width={28} height={28} username={user.username} />
+                <RiUser3Fill/>
               </IconButton>
               {isMobile ? (
                 <>
@@ -274,7 +275,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               }
             </>
           )}
-    
+
 
         </HorizontalStack>
       </Stack>
@@ -313,7 +314,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             {filteredUsers.map(user => (
               <ListItem button key={user._id} onClick={() => handleUserSelect(user)}>
                 <ListItemAvatar>
-                  <UserAvatar username={user.username} width={30} height={30} />
+                  <UserAvatar username={user.username} avatarId={user.avatar} width={30} height={30} />
                 </ListItemAvatar>
                 <ListItemText primary={user.username} />
               </ListItem>
@@ -341,7 +342,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             {filteredUsers.map(user => (
               <ListItem button key={user._id} onClick={() => handleUserSelect(user)}>
                 <ListItemAvatar>
-                  <UserAvatar username={user.username} width={30} height={30} />
+                  <UserAvatar username={user.username} avatarId={user.avatar} width={30} height={30} />
                 </ListItemAvatar>
                 <ListItemText primary={user.username} />
               </ListItem>
