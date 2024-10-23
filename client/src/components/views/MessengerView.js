@@ -19,30 +19,39 @@ const MessengerView = () => {
   const newConservant = state && state.user;
 
   const getConversation = (conversations, conservantId) => {
-    for (let i = 0; i < conversations.length; i++) {
-      const conversation = conversations[i];
-      if (conversation.recipient._id === conservantId) {
-        return conversation;
-      }
-    }
+    return conversations.find(
+      (conversation) => conversation.recipient._id === conservantId
+    );
   };
 
   const fetchConversations = async () => {
-    let conversations = await getConversations(user);
-    if (newConservant) {
-      setConservant(newConservant);
-      if (!getConversation(conversations, newConservant._id)) {
-        const newConversation = {
-          _id: newConservant._id,
-          recipient: newConservant,
-          new: true,
-          messages: [],
-        };
-        conversations = [newConversation, ...conversations];
-      }
+    if (!user) {
+      console.error("User not logged in");
+      setLoading(false);
+      return; // Exit if the user is not logged in
     }
-    setConversations(conversations);
-    setLoading(false);
+    
+    try {
+      let conversationsData = await getConversations(user);
+      if (newConservant) {
+        setConservant(newConservant);
+        // Add new conversation if it does not exist
+        if (!getConversation(conversationsData, newConservant._id)) {
+          const newConversation = {
+            _id: newConservant._id,
+            recipient: newConservant,
+            new: true,
+            messages: [],
+          };
+          conversationsData = [newConversation, ...conversationsData];
+        }
+      }
+      setConversations(conversationsData);
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+    } finally {
+      setLoading(false); // Ensure loading is set to false in any case
+    }
   };
 
   useEffect(() => {
@@ -50,20 +59,31 @@ const MessengerView = () => {
   }, []);
 
   useEffect(() => {
-    updateDimensions();
+    const updateDimensions = () => {
+      const width = window.innerWidth;
+      setWindowWidth(width);
+    };
 
+    updateDimensions(); // Update width initially
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
-  const updateDimensions = () => {
-    const width = window.innerWidth;
-    setWindowWidth(width);
-  };
+  // Render a loading indicator while loading
+  if (loading) {
+    return (
+      <Container>
+        <Navbar />
+        <Box sx={{ textAlign: "center", marginTop: 5 }}>
+          <h2>Loading...</h2> {/* You can replace this with a spinner */}
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container>
-      
+      <Navbar />
       <Box>
         <Card sx={{ padding: 0 }}>
           <Grid
@@ -116,6 +136,7 @@ const MessengerView = () => {
                   setConservant={setConservant}
                   loading={loading}
                 />
+                {/* This Messages component is hidden in mobile view if no conservant is selected */}
                 <Box sx={{ display: "none" }}>
                   <Messages
                     conservant={conservant}

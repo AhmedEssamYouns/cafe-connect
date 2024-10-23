@@ -12,5 +12,7 @@ html {
   overflow-y: scroll;
 }
 
-
-
+.sticky {
+  position: sticky;
+  top: 540px;
+}

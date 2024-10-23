@@ -32,7 +32,7 @@ const UserMessengerEntry = (props) => {
         selected={selected}
       >
         <ListItemAvatar>
-          <UserAvatar height={45} width={45} username={username} />
+          <UserAvatar height={45} width={45} avatarId={recipient.avatar} username={username} />
         </ListItemAvatar>
         <ListItemText
           primary={username}

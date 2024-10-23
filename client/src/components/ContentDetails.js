@@ -11,13 +11,13 @@ const ContentDetails = ({ username, createdAt, edited, preview,avatar }) => {
       <UserAvatar width={30} height={30} avatarId={avatar} username={username} />
       <Typography variant="subtitle2" color="text.secondary" gutterBottom>
         <Typography
-          component={Link} // Use Typography as a link
+          component={Link} 
           to={`/users/${username}`}
           sx={{
-            color: "primary.main", // Change this to the desired color
-            textDecoration: "none", // This removes the underline
+            color: "primary.main", 
+            textDecoration: "none",
             '&:hover': {
-              color: "primary.dark", // Change this to a darker shade on hover if needed
+              color: "primary.dark",
             },
           }}
           onClick={(e) => {

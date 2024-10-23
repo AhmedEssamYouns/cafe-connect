@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import HorizontalStack from "./util/HorizontalStack";
 import { AiFillLike } from "react-icons/ai";
 import UserLikeModal from "./UserLikeModal";
+import { BASE_URL } from "../config";
 
 const UserLikePreview = ({ postId, userLikePreview }) => {
   const [open, setOpen] = useState(false);
@@ -32,7 +33,7 @@ const UserLikePreview = ({ postId, userLikePreview }) => {
               {userLikes &&
                 userLikes.map((userLike) => (
                   <Avatar
-                    src={`https://robohash.org/${userLike.username}`}
+                    src={userLike.avatar ? `${BASE_URL}api/users/avatar/image/${userLike.avatar}` : `https://robohash.org/${userLike.username}`}
                     sx={{ backgroundColor: "lightgray", width: 30, height: 30 }}
                     key={userLike._id}
                   />

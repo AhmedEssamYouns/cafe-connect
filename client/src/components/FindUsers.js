@@ -35,18 +35,12 @@ const FindUsers = () => {
     fetchUsers();
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
 
-  // Filter users based on the search query
-  const filteredUsers = users.filter((user) =>
-    user.username.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
 
   return (
-    <Card>
-      <Stack spacing={2}>
+    <Card  className="sticky">
+      <Stack spacing={2} >
         <HorizontalStack justifyContent="space-between">
           <HorizontalStack>
             <AiOutlineUser />
@@ -66,8 +60,8 @@ const FindUsers = () => {
         {loading ? (
           <Loading />
         ) : (
-          filteredUsers.length > 0 ? (
-            filteredUsers.map((user) => (
+          users.length > 0 ? (
+            users.map((user) => (
               <UserEntry username={user.username} avatar={user.avatar} key={user.username} />
             ))
           ) : (

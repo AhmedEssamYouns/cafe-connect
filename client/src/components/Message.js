@@ -28,7 +28,7 @@ const Message = (props) => {
       alignItems="flex-end"
     >
       {message.direction === "to" && (
-        <UserAvatar username={username} height={30} width={30} />
+        <UserAvatar username={username} avatarId={props.conservant.avatar} height={30} width={30} />
       )}
 
       <Card

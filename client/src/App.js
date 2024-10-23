@@ -41,7 +41,7 @@ function App() {
       <CssBaseline />
       <BrowserRouter>
         <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        <Box sx={{ pt: isMobile ? 15 : 10 }}> {/* Adjust padding based on screen width */}
+        <Box sx={{ pt: isMobile ? 15 : 10 }}>
           <Routes>
             <Route path="/" element={<ExploreView />} />
             <Route path="/posts/:id" element={<PostView />} />

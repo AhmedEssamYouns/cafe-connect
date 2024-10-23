@@ -56,21 +56,21 @@ const Messages = (props) => {
   const fetchMessages = async () => {
     if (conversation) {
       if (conversation.new) {
-        setLoading(true); 
+        setLoading(false);
         setMessages(conversation.messages);
         return;
       }
-  
+
       if (JSON.stringify(messages) !== JSON.stringify(conversation.messages)) {
-        setLoading(false); 
+        setLoading(false);
         const data = await getMessages(user, conversation._id);
         setDirection(data);
-  
+
         if (data && !data.error) {
           setMessages(data);
         }
-  
-        setLoading(false); 
+
+        setLoading(false);
       }
     }
   };
@@ -114,46 +114,44 @@ const Messages = (props) => {
       content
     );
   };
-
-  const handleReceiveMessage = (senderId, username, content) => {
+const handleReceiveMessage = (senderId, username, content) => {
     const newMessage = { direction: "to", content };
-    const conversation = props.getConversation(
-      conversationsRef.current,
-      senderId
-    );
+    const conversation = props.getConversation(conversationsRef.current, senderId);
 
     if (conversation) {
-      let newMessages = [newMessage];
-      if (messages) {
-        newMessages = [...newMessages, ...messages];
-      }
+        // Append the new message to the existing messages
+        const updatedMessages = [...messages, newMessage]; // Keep the order
+        setMessages(updatedMessages);
 
-      setMessages(newMessages);
+        // Update the conversation's messages if it's a new conversation
+        if (conversation.new) {
+            conversation.messages = updatedMessages;
+        }
 
-      if (conversation.new) {
-        conversation.messages = newMessages;
-      }
-      conversation.lastMessageAt = Date.now();
+        conversation.lastMessageAt = Date.now();
 
-      let newConversations = conversationsRef.current.filter(
-        (conversationCompare) => conversation._id !== conversationCompare._id
-      );
+        // Update the conversations list
+        let newConversations = conversationsRef.current.filter(
+            (conversationCompare) => conversation._id !== conversationCompare._id
+        );
 
-      newConversations.unshift(conversation);
-      props.setConversations(newConversations);
+        newConversations.unshift(conversation); // Move the conversation to the top
+        props.setConversations(newConversations);
     } else {
-      const newConversation = {
-        _id: senderId,
-        recipient: { _id: senderId, username },
-        new: true,
-        messages: [newMessage],
-        lastMessageAt: Date.now(),
-      };
-      props.setConversations([newConversation, ...conversationsRef.current]);
+        // Handle a new conversation case
+        const newConversation = {
+            _id: senderId,
+            recipient: { _id: senderId, username },
+            new: true,
+            messages: [newMessage],
+            lastMessageAt: Date.now(),
+        };
+        props.setConversations([newConversation, ...conversationsRef.current]);
     }
 
     scrollToBottom();
-  };
+};
+
 
   // Socket listener for incoming messages
   useEffect(() => {
@@ -193,6 +191,7 @@ const Messages = (props) => {
               </IconButton>
             )}
             <UserAvatar
+              avatarId={props.conservant.avatar}
               username={props.conservant.username}
               height={30}
               width={30}
@@ -238,7 +237,7 @@ const Messages = (props) => {
     >
       <AiFillMessage size={80} />
       <Typography variant="h5" sx={{
-              fontFamily: 'Caveat, cursive',
+        fontFamily: 'Caveat, cursive',
 
       }}>CaféConnect Messenger</Typography>
       <Typography color="text.secondary">

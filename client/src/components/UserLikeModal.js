@@ -99,7 +99,7 @@ const UserLikeModal = ({ postId, open, setOpen }) => {
             <Stack spacing={2}>
               {userLikes &&
                 userLikes.map((like) => (
-                  <UserEntry username={like.username} key={like.username} />
+                  <UserEntry avatar={like.avatar} username={like.username} key={like.username} />
                 ))}
             </Stack>
             {loading ? <Loading /> : hasMorePages && <Box py={6}></Box>}

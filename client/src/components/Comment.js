@@ -63,7 +63,7 @@ const Comment = (props) => {
     mb: theme.spacing(2),
     padding: theme.spacing(0),
   };
-  
+
 
   return (
     <Box sx={style}>
@@ -91,6 +91,7 @@ const Comment = (props) => {
           <HorizontalStack justifyContent="space-between">
             <HorizontalStack>
               <ContentDetails
+                avatar={comment.commenter.avatar}
                 username={comment.commenter.username}
                 createdAt={comment.createdAt}
                 edited={comment.edited}

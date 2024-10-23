@@ -17,6 +17,7 @@ import Profile from "../Profile";
 import ProfileTabs from "../ProfileTabs";
 
 const ProfileView = () => {
+    const currentUser = isLoggedIn()
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState(null);
     const [editing, setEditing] = useState(false);
@@ -25,22 +26,29 @@ const ProfileView = () => {
     const [error, setError] = useState("");
     const params = useParams();
     const navigate = useNavigate();
-    const location = useLocation();
-    const [previousAvatar, setPreviousAvatar] = useState(null); // State to track previous avatar
-
     const fetchUser = async () => {
         setLoading(true);
+        
+        // Check if we have cached user data
+        const cachedUser = sessionStorage.getItem(`user_${params.userId}`);
+        if (cachedUser) {
+          const parsedUser = JSON.parse(cachedUser);
+          if (parsedUser.username === currentUser.username) {
+            setProfile(parsedUser);
+            setLoading(false);
+            return;
+          }
+        }
+        
+        
         const data = await getUser(params);
         setLoading(false);
         if (data.error) {
             setError(data.error);
         } else {
             setProfile(data);
-            // Check if the avatar has changed
-            if (previousAvatar !== data.avatar) {
-                setPreviousAvatar(data.avatar); // Update the previous avatar
-                // Optionally handle logic for avatar change here
-            }
+            // Cache the user data
+            sessionStorage.setItem(`user_${params.userId}`, JSON.stringify(data));
         }
     };
 
@@ -66,14 +74,6 @@ const ProfileView = () => {
     useEffect(() => {
         // Fetch user immediately on mount
         fetchUser();
-
-        // Set interval to fetch user every second
-        const interval = setInterval(() => {
-            fetchUser();
-        }, 1000);
-
-        // Clear the interval on component unmount
-        return () => clearInterval(interval);
     }, [params]); // Fetch user when params change
 
     const validate = (content) => {
@@ -109,7 +109,6 @@ const ProfileView = () => {
 
     return (
         <Container>
-
             <GridLayout
                 left={
                     <>
@@ -145,7 +144,6 @@ const ProfileView = () => {
                             handleMessage={handleMessage}
                             validate={validate}
                         />
-
                         <FindUsers />
                     </Stack>
                 }

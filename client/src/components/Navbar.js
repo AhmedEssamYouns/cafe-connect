@@ -15,12 +15,12 @@ import {
   Popover,
 } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { AiFillHome, AiOutlineCoffee, AiFillMessage, AiOutlineSearch, AiOutlineLogout, AiOutlineMenu,AiOutlineUser } from "react-icons/ai";
+import { AiFillHome, AiOutlineCoffee, AiFillMessage, AiOutlineSearch, AiOutlineLogout, AiOutlineMenu, AiOutlineUser } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { isLoggedIn, logoutUser } from "../helpers/authHelper";
 import UserAvatar from "./UserAvatar";
 import HorizontalStack from "./util/HorizontalStack";
-import { RiContrast2Line, RiSunFill,RiUser2Fill, RiUser3Fill } from "react-icons/ri";
+import { RiContrast2Line, RiSunFill, RiUser2Fill, RiUser3Fill } from "react-icons/ri";
 import { getAllUsers, getUser } from '../api/users';
 
 const Navbar = ({ darkMode, toggleDarkMode }) => {
@@ -37,7 +37,28 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
 
   const searchInputRef = useRef(null); // Ref for the search input
+  const searchListRef = useRef(null);
 
+
+  const handleClickOutside = (event) => {
+    // Check if the click is outside the search input and the search list
+    if (
+      searchInputRef.current &&
+      !searchInputRef.current.contains(event.target) &&
+      searchListRef.current &&
+      !searchListRef.current.contains(event.target)
+    ) {
+      setFilteredUsers([]); // Close the search list
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener to handle clicks outside
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   useEffect(() => {
     const updateDimensions = () => {
       setWindowWidth(window.innerWidth);
@@ -69,15 +90,15 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
       resizeObserver.observe(searchInputRef.current);
     }
 
-    // Cleanup observer on unmount
     return () => {
       if (searchInputRef.current) {
         resizeObserver.unobserve(searchInputRef.current);
       }
     };
-  }, [searchInputRef]); // Run this effect on mount or when the input reference changes
+  }, [searchInputRef]);
 
   const handleLogout = async () => {
+    handleMenuClose()
     await logoutUser();
     navigate("/login");
   };
@@ -120,6 +141,19 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleBlur = () => {
+    setFilteredUsers([]);
+  };
+
+  const handleFocus = () => {
+    if (search) {
+      const filtered = users.filter(user =>
+        user.username.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
   };
 
   return (
@@ -171,11 +205,12 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
         {width >= 635 && (
           <Box component="form" onSubmit={handleSubmit} sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
             <TextField
+              onFocus={handleFocus}
               size="small"
               label="Search..."
               value={search}
               onChange={handleChange}
-              inputRef={searchInputRef} // Attach the ref to the input
+              inputRef={searchInputRef}
               sx={{
                 width: "100%",
                 maxWidth: "600px",
@@ -222,7 +257,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               </IconButton>
 
               <IconButton component={Link} to={"/users/" + username}>
-                <RiUser3Fill/>
+                <RiUser3Fill />
               </IconButton>
               {isMobile ? (
                 <>
@@ -252,8 +287,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               ) : (
                 <>
                   <Button size="small" onClick={handleLogout}>Logout</Button>
-                  <IconButton size="small">
-                    {darkMode ? <RiSunFill onClick={toggleDarkMode} /> : <RiContrast2Line onClick={toggleDarkMode} />}
+                  <IconButton size="small" onClick={darkMode ? toggleDarkMode : toggleDarkMode}>
+                    {darkMode ?
+                      <RiSunFill /> :
+                      <RiContrast2Line />
+                    }
                   </IconButton>
                 </>
               )}
@@ -266,13 +304,13 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               <Button variant="text" size="small" href="/login">
                 Login
               </Button>
-              {isMobile &&
-                <IconButton size="small">
-                  {darkMode ?
-                    <RiSunFill onClick={toggleDarkMode} /> :
-                    <RiContrast2Line onClick={toggleDarkMode} />}
-                </IconButton>
-              }
+              <IconButton size="small" onClick={darkMode ? toggleDarkMode : toggleDarkMode}>
+                {darkMode ?
+                  <RiSunFill /> :
+                  <RiContrast2Line />
+                }
+              </IconButton>
+
             </>
           )}
 
@@ -283,6 +321,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
       {mobile && searchIcon && (
         <Box component="form" onSubmit={handleSubmit} mt={1}>
           <TextField
+            onFocus={handleFocus}
             size="small"
             label="Search..."
             fullWidth
@@ -296,6 +335,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
       {width >= 635 && search && filteredUsers.length > 0 && (
         <Box
+          ref={searchListRef}
           sx={{
             position: 'absolute',
             alignSelf: 'center',
@@ -325,6 +365,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
       {width <= 634 && search && searchIcon && filteredUsers.length > 0 && (
         <Box
+          ref={searchListRef}
           sx={{
             position: 'absolute',
             alignSelf: 'center',
