@@ -146,7 +146,7 @@ const enrichWithUserLikePreview = async (posts) => {
     postId: { $in: Object.keys(postMap) },
   })
     .limit(200)
-    .populate("userId", "username");
+    .populate("userId", "username avatar");
 
   postLikes.forEach((postLike) => {
     const post = postMap[postLike.postId];
@@ -303,7 +303,7 @@ const getUserLikes = async (req, res) => {
     const postLikesQuery = PostLike.find({ postId: postId })
       .sort("_id")
       .limit(USER_LIKES_PAGE_SIZE + 1)
-      .populate("userId", "username");
+      .populate("userId", "username avatar");
 
     if (anchor) {
       postLikesQuery.where("_id").gt(anchor);
@@ -319,6 +319,7 @@ const getUserLikes = async (req, res) => {
       return {
         id: like._id,
         username: like.userId.username,
+        avatar:like.userId.avatar,
       };
     });
 

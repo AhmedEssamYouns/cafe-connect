@@ -1,19 +1,5 @@
 import { useTheme } from "@emotion/react";
-import {
-  Avatar,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-  Button,
-  Box,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  useMediaQuery,
-  Popover,
-} from "@mui/material";
+import { IconButton, Stack, TextField, Typography, Button, Box, List, ListItem, ListItemAvatar, ListItemText, useMediaQuery, Popover} from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import { AiFillHome, AiOutlineCoffee, AiFillMessage, AiOutlineSearch, AiOutlineLogout, AiOutlineMenu, AiOutlineUser } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
@@ -257,7 +243,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               </IconButton>
 
               <IconButton component={Link} to={"/users/" + username}>
-                <RiUser3Fill />
+                <UserAvatar height={25} width={25} avatarId={user.avatar} username={user.username} />
               </IconButton>
               {isMobile ? (
                 <>

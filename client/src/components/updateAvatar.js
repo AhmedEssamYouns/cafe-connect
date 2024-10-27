@@ -82,14 +82,7 @@ const UpdateAvatar = ({ user }) => {
             <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
                 <DialogTitle>
                     Update Avatar
-                    <IconButton
-                        edge="end"
-                        color="inherit"
-                        onClick={handleClose}
-                        aria-label="close"
-                    >
-                        <AiFillCloseCircle />
-                    </IconButton>
+
                 </DialogTitle>
                 <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>

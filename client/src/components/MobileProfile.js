@@ -34,11 +34,10 @@ const MobileProfile = (props) => {
     <Card sx={{ display: { sm: "block", md: "none" }, mb: 2 }}>
       {user ? (
         <Stack spacing={2}>
-          <HorizontalStack spacing={2} justifyContent="space-between">
-            <UserAvatar width={45} height={50} avatarId={user.avatar} username={user.username} />
-            {user.username == currentUser.username&& <UpdateAvatar profile={props.profile} user={user} />}
-
-            <Typography variant="h7" textOverflow="ellipses">
+          <Box spacing={2} justifyItems={"center"}>
+                <UserAvatar width={105} height={100} avatarId={user.avatar} username={user.username} />
+                {user.username == currentUser.username && <UpdateAvatar profile={props.profile} user={user} />}
+            <Typography variant="h7" marginTop={30}>
               {user.username}
             </Typography>
 
@@ -58,7 +57,7 @@ const MobileProfile = (props) => {
                 </Stack>
               </HorizontalStack>
             </Box>
-          </HorizontalStack>
+          </Box>
           <Divider />
           <HorizontalStack>
             {currentUser && user._id === currentUser.userId && (

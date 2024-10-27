@@ -29,12 +29,12 @@ const ProfileView = () => {
     const fetchUser = async () => {
         setLoading(true);
         
-        // Check if we have cached user data
         const cachedUser = sessionStorage.getItem(`user_${params.userId}`);
         if (cachedUser) {
           const parsedUser = JSON.parse(cachedUser);
           if (parsedUser.username === currentUser.username) {
             setProfile(parsedUser);
+            setTab("liked");
             setLoading(false);
             return;
           }
@@ -48,10 +48,15 @@ const ProfileView = () => {
         } else {
             setProfile(data);
             // Cache the user data
+            setTab("liked");
             sessionStorage.setItem(`user_${params.userId}`, JSON.stringify(data));
         }
     };
-
+    useEffect(() => {
+        if (profile) {
+            setTab("posts");
+        }
+    }, [profile]);
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -72,9 +77,8 @@ const ProfileView = () => {
     };
 
     useEffect(() => {
-        // Fetch user immediately on mount
         fetchUser();
-    }, [params]); // Fetch user when params change
+    }, [params]); 
 
     const validate = (content) => {
         let error = "";

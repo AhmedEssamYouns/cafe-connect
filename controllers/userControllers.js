@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Follow = require("../models/Follow");
 const { default: mongoose } = require("mongoose");
- 
+
 
 
 
@@ -15,6 +15,7 @@ const getUserDict = (token, user) => {
     username: user.username,
     userId: user._id,
     isAdmin: user.isAdmin,
+    avatar: user.avatar
   };
 };
 
